@@ -1,0 +1,11 @@
+---
+galaxy_info:
+  author: alegrand
+  description: Configure Ferm firewall
+  company: Arkena
+  license: MIT
+  min_ansible_version: 1.6
+  categories:
+  - firewall
+  - system
+dependencies: []

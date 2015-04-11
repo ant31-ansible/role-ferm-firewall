@@ -1,0 +1,19 @@
+---
+ferm_default_rules: &ferm_default
+  # INPUT
+  - {rule: "policy DROP;", comment: "global policy", chain: "INPUT"}
+  - {rule: "mod state state INVALID DROP;", comment: "connection tracking: drop", chain: "INPUT"}
+  - {rule: "mod state state (ESTABLISHED RELATED) ACCEPT;", comment: "connection tracking", chain: "INPUT"}
+  - {rule: "interface lo ACCEPT;", comment: "allow local packet", chain: "INPUT"}
+  - {rule: "proto icmp ACCEPT;", comment: "respond to ping", chain: "INPUT"}
+  - {rule: "proto tcp dport ssh ACCEPT;", comment: "allow SSH connections", chain: "INPUT"}
+  # OUTPUT
+  - {rule: "policy ACCEPT;", comment: "global policy", chain: "OUTPUT"}
+  #FORWARD
+  - {rule: "policy DROP;", comment: "global policy", chain: "FORWARD"}
+  - {rule: "mod state state INVALID DROP;", comment: "connection tracking: drop", chain: "FORWARD"}
+  - {rule: "mod state state (ESTABLISHED RELATED) ACCEPT;", comment: "connection tracking", chain: "FORWARD"}
+
+ferm_rules: {}
+app_name: "appname"
+ferm_id: "ferm"
