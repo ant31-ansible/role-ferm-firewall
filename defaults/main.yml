@@ -9,26 +9,26 @@ ferm_rules:
         - {rule: "interface lo ACCEPT;", comment: "allow local packet"}
         - {rule: "proto icmp ACCEPT;", comment: "respond to ping"}
         - {rule: "proto tcp dport ssh ACCEPT;", comment: "allow SSH connections"}
-      - chain: OUTPUT
-        domains:
-          - ip
-        rules:
-          - rule: "policy ACCEPT;"
-            comment: global policy
+    - chain: OUTPUT
+      domains:
+        - ip
+      rules:
+        - rule: "policy ACCEPT;"
+          comment: global policy
       # Different set of rules on ip / ip6
-      - chain: OUTPUT
-        domains:
-          - ip6
-        rules:
-          - rule: "policy ACCEPT;"
-            comment: global policy ip6
+    - chain: OUTPUT
+      domains:
+        - ip6
+      rules:
+        - rule: "policy ACCEPT;"
+          comment: global policy ip6
 
-      - chain: FORWARD
-        domains: [ip, ip6]
-        rules:
-          - rule: "policy DROP;"
-            comment: global policy
-          - rule: "mod state state INVALID DROP;"
-            comment: "connection tracking: drop"
-          - rule: "mod state state (ESTABLISHED RELATED) ACCEPT;"
-            comment: "connection tracking"
+    - chain: FORWARD
+      domains: [ip, ip6]
+      rules:
+        - rule: "policy DROP;"
+          comment: global policy
+        - rule: "mod state state INVALID DROP;"
+          comment: "connection tracking: drop"
+        - rule: "mod state state (ESTABLISHED RELATED) ACCEPT;"
+          comment: "connection tracking"

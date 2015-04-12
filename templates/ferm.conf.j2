@@ -1,10 +1,16 @@
-{% for ferm in item.value.iteritems() %}
-domain ({% for domain ferm.domains %}{{domain}} {% endfor %}) table filter {
+{% for ferm in item.value %}
+{% if ferm.domains is defined %}
+domain ({% for domain in ferm.domains %}{{domain}} {% endfor %}) table filter {
+{% else %}
+domain (ip ip6) table filter {
+{% endif %}
   chain {{ferm.chain}} {
   {% for rule in ferm.rules %}
-    #{{rule.comment}}
-    {{rule.rule}}
-  {% endfor }
+   # {{rule.comment}}
+     {{rule.rule}}
+
+  {% endfor %}
   }
 }
+
 {% endfor %}
