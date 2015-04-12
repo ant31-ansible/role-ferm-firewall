@@ -11,7 +11,7 @@ Requirements
 
 Role Variables
 --------------
-Define the list of packages to install as follow:
+Default variables:
 
 ```
 ---

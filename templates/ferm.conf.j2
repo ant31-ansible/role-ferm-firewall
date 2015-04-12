@@ -1,42 +1,10 @@
-table filter {
-  chain INPUT {
-{% for ferm in ferm_default_rules %}
-{% if ferm.chain ==  "INPUT" %}
-    #{{ferm.comment}}
-    {{ferm.rule}}
-
-{% endif %}
-{% endfor %}
-
-    @include 'ferm.d/inputs/';
+{% for ferm in item.value.iteritems() %}
+domain ({% for domain ferm.domains %}{{domain}} {% endfor %}) table filter {
+  chain {{ferm.chain}} {
+  {% for rule in ferm.rules %}
+    #{{rule.comment}}
+    {{rule.rule}}
+  {% endfor }
   }
 }
-
-table filter {
-  chain OUTPUT {
-{% for ferm in ferm_default_rules %}
-{% if ferm.chain ==  "OUTPUT" %}
-    #{{ferm.comment}}
-    {{ferm.rule}}
-
-{% endif %}
 {% endfor %}
-
-    @include 'ferm.d/outputs/';
-  }
-}
-
-
-table filter {
-  chain FORWARD {
-{% for ferm in ferm_default_rules %}
-{% if ferm.chain ==  "FORWARD" %}
-    #{{ferm.comment}}
-    {{ferm.rule}}
-
-{% endif %}
-{% endfor %}
-
-    @include 'ferm.d/forwards/';
-  }
-}

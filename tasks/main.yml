@@ -1,81 +1,30 @@
 ---
-# This Playbook configure Node firewall 'ferm'
+# This Playbook configure firewall 'ferm'
 
-# file: roles/common/tasks/ferm.yml
 - name: Ferm | Make sure ferm is installed
-  apt: pkg=ferm state=present
+  apt: name=ferm state=present
   tags:
    - ferm
-   - install
-   - common
 
 - name: Ferm | Make sure the directory for firewall rules exist
   file: path=/etc/ferm state=directory owner=root group=root
   tags:
    - ferm
-   - install
-   - common
 
 - name: Ferm | Create config directory
   file: path=/etc/ferm/ferm.d state=directory owner=root group=root
   tags:
    - ferm
-   - install
-   - common
 
-- name: Ferm | Create input config directory
-  file: path=/etc/ferm/ferm.d/inputs/ state=directory owner=root group=root
+- name: Ferm | Include ferm.d directory
+  lineinfile: dest=/etc/ferm/ferm.conf line="@include 'ferm.d/';" backup=yes
+  tags:
+    - ferm
+
+- name: Ferm | Create the ferm conf files
+  template: src=ferm.conf.j2 dest=/etc/ferm/ferm.d/{{item.key}}.conf mode=0655 owner=root group=root backup=yes
+  with_dict: ferm_rules
   tags:
    - ferm
-   - install
-   - common
-
-- name: Ferm | Create output config directory
-  file: path=/etc/ferm/ferm.d/outputs/ state=directory owner=root group=root
-  tags:
-   - ferm
-   - install
-   - common
-
-- name: Ferm | Create forward config directory
-  file: path=/etc/ferm/ferm.d/forwards/ state=directory owner=root group=root
-  tags:
-   - ferm
-   - install
-   - common
-
-- name: Ferm | Create the ferm default conf file
-  template: src=ferm.conf.j2 dest=/etc/ferm/ferm.conf mode=0655 backup=yes owner=root group=root
-  tags:
-   - ferm
-   - install
-   - common
-  notify:
-    - reload ferm
-
-- name: Ferm | Create the ferm output conf file
-  template: src=output_ferm.conf.j2 dest=/etc/ferm/ferm.d/outputs/{{app_name}}_{{ferm_id}}_{{inventory_hostname}}.conf mode=0655 owner=root group=root
-  tags:
-   - ferm
-   - install
-   - common
-  notify:
-    - reload ferm
-
-- name: Ferm | Create the ferm input conf file
-  template: src=input_ferm.conf.j2 dest=/etc/ferm/ferm.d/inputs/{{app_name}}_{{ferm_id}}_{{inventory_hostname}}.conf mode=0655 owner=root group=root
-  tags:
-   - ferm
-   - install
-   - common
-  notify:
-    - reload ferm
-
-- name: Ferm | Create the ferm forward conf file
-  template: src=forward_ferm.conf.j2 dest=/etc/ferm/ferm.d/forwards/{{app_name}}_{{ferm_id}}_{{inventory_hostname}}.conf mode=0655 owner=root group=root
-  tags:
-   - ferm
-   - install
-   - common
   notify:
     - reload ferm

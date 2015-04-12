@@ -1,7 +1,0 @@
-{% for key, ferm in ferm_rules.iteritems() %}
-{% if ferm.chain ==  "OUTPUT" %}
-#{{ferm.comment}}
-{{ferm.rule}}
-
-{% endif %}
-{% endfor %}

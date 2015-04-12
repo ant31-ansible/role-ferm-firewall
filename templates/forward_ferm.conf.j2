@@ -1,8 +1,0 @@
-{% for key, ferm in ferm_rules.iteritems() %}
-{% if ferm.chain ==  "FORWARD" %}
-#{{ferm.comment}}
-{{ferm.rule}}
-
-{% endif %}
-{% endfor %}
-#FORWARD_INSERT_BEFORE
