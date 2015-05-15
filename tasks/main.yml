@@ -1,5 +1,9 @@
 ---
 # This Playbook configure firewall 'ferm'
+- name: Ferm | Display rules var
+  debug: var="{{ferm_rules}}"
+  tags:
+    - ferm
 
 - name: Ferm | Make sure ferm is installed
   apt: name=ferm state=present
@@ -17,7 +21,7 @@
    - ferm
 
 - name: Ferm | Include ferm.d directory
-  lineinfile: dest=/etc/ferm/ferm.conf line="@include 'ferm.d/';" backup=yes
+  lineinfile: dest=/etc/ferm/ferm.conf line="@include 'ferm.d/';" backup=yes insertbefore=BOF
   tags:
     - ferm
 
@@ -28,3 +32,12 @@
    - ferm
   notify:
     - reload ferm
+
+
+- meta: flush_handlers
+
+- name: reload ferm
+  service: name=ferm state=restarted
+  changed_when: False
+  tags:
+    - ferm
