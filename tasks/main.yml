@@ -17,6 +17,11 @@
 
 - name: Ferm | Include ferm.d directory
   lineinfile: dest=/etc/ferm/ferm.conf line="@include 'ferm.d/';" backup=yes insertbefore=BOF create=yes
+  when: ansible_os_family is not "RedHat"
+
+- name: Ferm | Include ferm.d directory
+  lineinfile: dest=/etc/ferm.conf line="@include 'ferm.d/';" backup=yes insertbefore=BOF create=yes
+  when: major_release is "7" and ansible_os_family is "RedHat"
 
 - name: Ferm | Create the ferm conf files
   template: src=ferm.conf.j2 dest=/etc/ferm/ferm.d/{{item.key}}.conf mode=0655 owner=root group=root backup=yes
