@@ -8,29 +8,19 @@
 
 - name: Ferm | Display rules var
   debug: var="{{ferm_rules}}"
-  tags:
-    - ferm
 
 - name: Ferm | Make sure the directory for firewall rules exist
   file: path=/etc/ferm state=directory owner=root group=root
-  tags:
-   - ferm
 
 - name: Ferm | Create config directory
   file: path=/etc/ferm/ferm.d state=directory owner=root group=root
-  tags:
-   - ferm
 
 - name: Ferm | Include ferm.d directory
-  lineinfile: dest=/etc/ferm/ferm.conf line="@include 'ferm.d/';" backup=yes insertbefore=BOF
-  tags:
-    - ferm
+  lineinfile: dest=/etc/ferm/ferm.conf line="@include 'ferm.d/';" backup=yes insertbefore=BOF create=yes
 
 - name: Ferm | Create the ferm conf files
   template: src=ferm.conf.j2 dest=/etc/ferm/ferm.d/{{item.key}}.conf mode=0655 owner=root group=root backup=yes
   with_dict: ferm_rules
-  tags:
-   - ferm
   notify:
     - reload ferm
 
@@ -40,5 +30,3 @@
 - name: reload ferm
   service: name=ferm state=restarted
   changed_when: False
-  tags:
-    - ferm
