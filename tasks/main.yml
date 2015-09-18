@@ -1,5 +1,11 @@
 ---
 # This Playbook configure firewall 'ferm'
+- name: Install Ferm
+  action:
+    module: "{{ ansible_pkg_mgr }}"
+    name: ferm
+    state: present
+
 - name: Ferm | Display rules var
   debug: var="{{ferm_rules}}"
   tags:
