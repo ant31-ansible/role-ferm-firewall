@@ -15,12 +15,12 @@
 - name: Ferm | Create config directory
   file: path=/etc/ferm/ferm.d state=directory owner=root group=root
 
-- name: Ferm | Include ferm.d directory
+- name: Ferm | Include ferm.d directory on Debian
   lineinfile: dest=/etc/ferm/ferm.conf line="@include 'ferm/ferm.d/';" backup=yes insertbefore=BOF create=yes
   when: ansible_os_family == "Debian"
 
-- name: Ferm | Include ferm.d directory
-  lineinfile: dest=/etc/ferm.conf line="@include 'ferm.d/';" backup=yes insertbefore=BOF create=yes
+- name: Ferm | Include ferm.d directory on RedHat
+  lineinfile: dest=/etc/ferm.conf line="@include 'ferm/ferm.d/';" backup=yes insertbefore=BOF create=yes
   when: ansible_os_family == "RedHat"
 
 - name: Ferm | Create the ferm conf files
