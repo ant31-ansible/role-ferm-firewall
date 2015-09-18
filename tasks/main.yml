@@ -11,11 +11,6 @@
   tags:
     - ferm
 
-- name: Ferm | Make sure ferm is installed
-  apt: name=ferm state=present
-  tags:
-   - ferm
-
 - name: Ferm | Make sure the directory for firewall rules exist
   file: path=/etc/ferm state=directory owner=root group=root
   tags:
