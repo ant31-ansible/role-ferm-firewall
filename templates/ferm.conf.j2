@@ -6,7 +6,7 @@ domain ({% for domain in ferm.domains %}{{domain}} {% endfor %}) table {{ferm.ta
 {% endif %}
   chain {{ferm.chain}} {
 {% for rule in ferm.rules %}
-   # {{rule.comment}}
+   # {{rule.comment|default('')}}
    {{rule.rule}}
 
  {% endfor %}
