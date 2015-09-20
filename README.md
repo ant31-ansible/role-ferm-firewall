@@ -87,6 +87,21 @@ on servers" }
   roles:
     - ferm-firewall
 
+- hosts: kvm
+  vars:
+    - ferm_rules:
+        rabbitmq_nat:
+	  - table: nat
+	    chain: PREROUTING
+	    rules:
+	      - rule: "proto tcp dport 5672 DNAT to 192.168.0.2:5672"
+	        comment: "nat rabbitmq to host"
+	  - table: nat
+	    chain: OUTPUT
+            rules:
+              - rule: "outerface lo proto tcp dport 5672 DNAT to 192.168.0.2:5672;"
+
+
 - hosts: rabbitmq
   vars:
     - ferm_rules:
@@ -118,6 +133,7 @@ domain (ip ip6) table filter {
     }
 }
 ```
+
  -  /etc/ferm/ferm.d/rabbitmq.conf
 ```conf
 domain (ip ) table filter {
@@ -126,6 +142,25 @@ domain (ip ) table filter {
      proto tcp dport (5672) ACCEPT;
 
     }
+}
+```
+
+ -  /etc/ferm/ferm.d/rabbitmq_nat.conf
+```conf
+ table nat {
+  chain PREROUTING {
+   # nat rabbitmq to host
+   proto tcp dport 5672 DNAT to 192.168.0.2:5672;
+
+  }
+}
+
+ table nat {
+  chain OUTPUT {
+   # outerface rabbitmq
+   outerface lo proto tcp dport 5672 DNAT to 192.168.0.2:5672;
+
+  }
 }
 ```
 
