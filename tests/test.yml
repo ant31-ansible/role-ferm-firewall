@@ -1,0 +1,29 @@
+- hosts: localhost
+  vars:
+    - ferm_rules:
+        test_rabbitmq_nat:
+          - table: nat
+            chain: PREROUTING
+            rules:
+              - rule: "proto tcp dport 5672 DNAT to 192.168.0.2:5672;"
+                comment: "nat rabbitmq to host"
+          - table: nat
+            chain: OUTPUT
+            rules:
+              - rule: "outerface lo proto tcp dport 5672 DNAT to 192.168.0.2:5672;"
+                comment: "outerface rabbitmq"
+  roles:
+    - ferm-firewall
+
+
+- hosts: localhost
+  vars:
+    - ferm_rules:
+        test_rabbitmq:
+          - chain: INPUT
+            domains: [ip]
+            rules:
+              - rule: "proto tcp dport (5672) ACCEPT;"
+                comment: "Rabbitmq-server"
+  roles:
+    - ferm-firewall
