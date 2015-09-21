@@ -7,7 +7,8 @@
     state: present
 
 - name: Disable firewalld
-  service: name=firewalld state=stopped enabled=no
+  service: name={{ item }} state=stopped enabled=no
+  with_items: disable_other_firewalls
 
 - name: Ferm | Display rules var
   debug: var="{{ferm_rules}}"
