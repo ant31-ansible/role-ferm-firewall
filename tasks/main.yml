@@ -15,23 +15,35 @@
 - name: Ferm | Make sure the directory for firewall rules exist
   file: path=/etc/ferm state=directory owner=root group=root
 
-- name: Ferm | Create config directory
-  file: path=/etc/ferm/ferm.d state=directory owner=root group=root
+- name: Ferm | Create config directory for non-RedHat
+  file: path=/etc/ferm.d state=directory owner=root group=root
+  when: ansible_os_family != "RedHat"
 
-- name: Ferm | Include ferm.d directory on Debian
-  lineinfile: dest=/etc/ferm/ferm.conf line="@include 'ferm/ferm.d/';" backup=yes insertbefore=BOF create=yes
+- name: Ferm | Create config directory for RedHat
+  file: path=/etc/ferm/ferm.d state=directory owner=root group=root
+  when: ansible_os_family == "RedHat"
+
+- name: Ferm | Include ferm.d directory on non-RedHat
+  lineinfile: dest=/etc/ferm/ferm.conf line="@include 'ferm.d/';" backup=yes insertbefore=BOF create=yes
   when: ansible_os_family != "RedHat"
 
 - name: Ferm | Include ferm.d directory on RedHat
   lineinfile: dest=/etc/ferm.conf line="@include 'ferm/ferm.d/';" backup=yes insertbefore=BOF create=yes
   when: ansible_os_family == "RedHat"
 
-- name: Ferm | Create the ferm conf files
+- name: Ferm | Create the ferm conf files on non-RedHat
+  template: src=ferm.conf.j2 dest=/etc/ferm.d/{{item.key}}.conf mode=0655 owner=root group=root backup=yes
+  with_dict: ferm_rules
+  notify:
+    - reload ferm
+  when: ansible_os_family != "RedHat"
+
+- name: Ferm | Create the ferm conf files on RedHat
   template: src=ferm.conf.j2 dest=/etc/ferm/ferm.d/{{item.key}}.conf mode=0655 owner=root group=root backup=yes
   with_dict: ferm_rules
   notify:
     - reload ferm
-
+  when: ansible_os_family == "RedHat"
 
 - meta: flush_handlers
 
