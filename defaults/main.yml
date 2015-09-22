@@ -8,7 +8,6 @@ ferm_rules:
         - {rule: "mod state state (ESTABLISHED RELATED) ACCEPT;", comment: "connection tracking"}
         - {rule: "interface lo ACCEPT;", comment: "allow local packet"}
         - {rule: "proto icmp ACCEPT;", comment: "respond to ping"}
-        - {rule: "proto udp dport 500 ACCEPT;", comment: "Ipsec"}
         - {rule: "proto tcp dport ssh ACCEPT;", comment: "allow SSH connections"}
     - chain: OUTPUT
       domains:
