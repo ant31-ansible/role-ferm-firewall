@@ -32,19 +32,34 @@
   lineinfile: dest=/etc/ferm.conf line="@include 'ferm/ferm.d/';" backup=yes insertbefore=BOF create=yes
   when: ansible_os_family == "RedHat"
 
-- name: Ferm | Create the ferm conf files on non-RedHat
+- name: Ferm | Create the default ferm conf files on non-RedHat
   template: src=ferm.conf.j2 dest=/etc/ferm.d/{{item.key}}.conf mode=0655 owner=root group=root backup=yes
   with_dict: ferm_rules
   notify:
     - reload ferm
   when: ansible_os_family != "RedHat"
 
-- name: Ferm | Create the ferm conf files on RedHat
+- name: Ferm | Create the default ferm conf files on RedHat
   template: src=ferm.conf.j2 dest=/etc/ferm/ferm.d/{{item.key}}.conf mode=0655 owner=root group=root backup=yes
   with_dict: ferm_rules
   notify:
     - reload ferm
   when: ansible_os_family == "RedHat"
+
+- name: Ferm | Create extra ferm conf files on non-RedHat
+  template: src=ferm.conf.j2 dest=/etc/ferm.d/{{item.key}}.conf mode=0655 owner=root group=root backup=yes
+  with_dict: ferm_rules_extra
+  notify:
+    - reload ferm
+  when: ansible_os_family != "RedHat" and ferm_rules_extra is defined
+
+- name: Ferm | Create extra ferm conf files on RedHat
+  template: src=ferm.conf.j2 dest=/etc/ferm/ferm.d/{{item.key}}.conf mode=0655 owner=root group=root backup=yes
+  with_dict: ferm_rules_extra
+  notify:
+    - reload ferm
+  when: ansible_os_family == "RedHat" and ferm_rules_extra is defined
+
 
 - meta: flush_handlers
 
