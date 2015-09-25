@@ -9,6 +9,19 @@ Requirements
 
  - ferm package
 
+Configuration files and variables structure
+-------------------------------------------
+
+ - roles/ansible-role-ferm-firewall/defaults/main.yml
+  - this is used in case there is no ferm\_rules defined any where else
+
+Example configuration:
+
+ - group\_vars/all/all
+  - this can have a ferm\_rules defined - used on all hosts
+ - group\_vars/group/group.yml
+  - this can have a ferm\_rules\_extra defined - used in addition to the ferm\_rules
+
 Role Variables
 --------------
 To configure ferm, you need to provide a key to associate a set of rules to a role/software. This way, rules splited in multiple var-files won't overwrite each other.

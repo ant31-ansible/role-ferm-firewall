@@ -1,3 +1,4 @@
+#{{ ansible_managed }}
 {% for ferm in item.value %}
  {% if ferm.domains is defined %}
 domain ({% for domain in ferm.domains %}{{domain}} {% endfor %}) table {{ferm.table|default('filter')}} {
