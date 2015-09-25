@@ -26,4 +26,4 @@ ferm_rules:
         - rule: "mod state state (ESTABLISHED RELATED) ACCEPT;"
           comment: "connection tracking"
 
-disable_other_firewalls: [firewalld]
+disable_other_firewalls: []
