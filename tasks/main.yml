@@ -45,3 +45,6 @@
 - name: reload ferm
   service: name=ferm state=restarted
   changed_when: False
+
+- name: enable ferm on boot
+  service: name=ferm enabled=yes
