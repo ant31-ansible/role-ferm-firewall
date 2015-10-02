@@ -45,6 +45,11 @@
 - name: reload ferm
   service: name=ferm state=restarted
   changed_when: False
+  register: fermreloaded
 
 - name: enable ferm on boot
   service: name=ferm enabled=yes
+
+- name: if ferm_fail2ban is True - restart fail2ban as well if ferm is reloaded
+  service: name=fail2ban state=restarted
+  when: fermreloaded.changed and ferm_fail2ban
