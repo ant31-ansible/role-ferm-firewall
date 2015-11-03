@@ -12,7 +12,7 @@
   ignore_errors: true
 
 - name: Ferm | Display rules var
-  debug: var="{{ferm_rules}}"
+  debug: var=ferm_rules
 
 - name: Ferm | Make sure the directory for firewall rules exist
   file: path=/etc/ferm state=directory owner=root group=root
