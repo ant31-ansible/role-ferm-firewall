@@ -1,5 +1,11 @@
 ---
 # This Playbook configure firewall 'ferm'
+- name: Ferm | Install iptables
+  action:
+    module: "{{ ansible_pkg_mgr }}"
+    name: iptables
+    state: present
+
 - name: Ferm | Install Ferm
   action:
     module: "{{ ansible_pkg_mgr }}"
