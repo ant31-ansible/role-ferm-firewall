@@ -28,3 +28,4 @@ ferm_rules_defaults:
 
 ferm_rules: {}
 disable_other_firewalls: []
+ferm_fail2ban: False

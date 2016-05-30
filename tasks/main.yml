@@ -1,5 +1,11 @@
 ---
 # This Playbook configure firewall 'ferm'
+- name: Ferm | Install iptables
+  action:
+    module: "{{ ansible_pkg_mgr }}"
+    name: iptables
+    state: present
+
 - name: Ferm | Install Ferm
   action:
     module: "{{ ansible_pkg_mgr }}"
@@ -12,7 +18,7 @@
   ignore_errors: true
 
 - name: Ferm | Display rules var
-  debug: var="{{ferm_rules}}"
+  debug: var=ferm_rules
 
 - name: Ferm | Make sure the directory for firewall rules exist
   file: path=/etc/ferm state=directory owner=root group=root
@@ -45,3 +51,11 @@
 - name: reload ferm
   service: name=ferm state=restarted
   changed_when: False
+  register: fermreloaded
+
+- name: enable ferm on boot
+  service: name=ferm enabled=yes
+
+- name: if ferm_fail2ban is True - restart fail2ban as well if ferm is reloaded
+  service: name=fail2ban state=restarted
+  when: fermreloaded.changed and ferm_fail2ban
