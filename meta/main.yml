@@ -8,4 +8,5 @@ galaxy_info:
   categories:
   - firewall
   - system
-dependencies: []
+dependencies:
+  - { role: 'repo-epel', when: ansible_os_family|lower == "redhat" }
