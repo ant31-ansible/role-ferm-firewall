@@ -1,48 +1,43 @@
 ---
 # This Playbook configure firewall 'ferm'
 - name: Ferm | Install iptables
-  action:
-    module: "{{ ansible_pkg_mgr }}"
+  package:
     name: iptables
     state: present
 
 - name: Ferm | Install Ferm
-  action:
-    module: "{{ ansible_pkg_mgr }}"
+  package:
     name: ferm
     state: present
 
 - name: Ferm | Disable firewalls
-  service: name={{ item }} state=stopped enabled=no
-  with_items: disable_other_firewalls
+  service: name="{{ item }}" state=stopped enabled=no
+  with_items: "{{ disable_other_firewalls }}"
   ignore_errors: true
 
 - name: Ferm | Display rules var
   debug: var=ferm_rules
 
-- name: Ferm | Make sure the directory for firewall rules exist
-  file: path=/etc/ferm state=directory owner=root group=root
-
 - name: Ferm | Create config directory
-  file: path=/etc/ferm/ferm.d state=directory owner=root group=root
+  file: path=/etc/ferm.d state=directory owner=root group=root
 
 - name: Ferm | Include ferm.d directory on non-RedHat
   lineinfile: dest=/etc/ferm/ferm.conf line="@include 'ferm.d/';" backup=yes insertbefore=BOF create=yes
   when: ansible_os_family != "RedHat"
 
 - name: Ferm | Include ferm.d directory on RedHat
-  lineinfile: dest=/etc/ferm.conf line="@include 'ferm/ferm.d/';" backup=yes insertbefore=BOF create=yes
+  lineinfile: dest=/etc/ferm.conf line="@include 'ferm.d/';" backup=yes insertbefore=BOF create=yes
   when: ansible_os_family == "RedHat"
 
 - name: Ferm | Create the default ferm conf files
-  template: src=ferm.conf.j2 dest=/etc/ferm/ferm.d/{{item.key}}.conf mode=0655 owner=root group=root backup=yes
-  with_dict: ferm_rules_defaults
+  template: src=ferm.conf.j2 dest=/etc/ferm.d/{{item.key}}.conf mode=0655 owner=root group=root backup=yes
+  with_dict: "{{ ferm_rules }}"
   notify:
     - reload ferm
 
 - name: Ferm | Create the ferm conf files
-  template: src=ferm.conf.j2 dest=/etc/ferm/ferm.d/{{item.key}}.conf mode=0655 owner=root group=root backup=yes
-  with_dict: ferm_rules
+  template: src=ferm.conf.j2 dest=/etc/ferm.d/{{item.key}}.conf mode=0655 owner=root group=root backup=yes
+  with_dict: "{{ ferm_rules }}"
   notify:
     - reload ferm
 
