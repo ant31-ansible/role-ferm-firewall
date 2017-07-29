@@ -1,4 +1,4 @@
-ferm_rules_defaults:
+ferm_rules:
   default:
     - chain: INPUT
       domains: [ip, ip6]
@@ -26,6 +26,6 @@ ferm_rules_defaults:
         - rule: "mod state state (ESTABLISHED RELATED) ACCEPT;"
           comment: "connection tracking"
 
-ferm_rules: {}
+ferm_dir: "{% if ansible_os_family|lower == 'redhat' %}/etc/ferm.d{% else %}/etc/ferm/ferm.d{% endif %}"
 disable_other_firewalls: []
 ferm_fail2ban: False
