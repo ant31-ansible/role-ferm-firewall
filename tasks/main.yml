@@ -1,4 +1,7 @@
 ---
+- set_fact:
+    ferm_rules: "{{ ferm_rules|default({}) | combine(ferm_default_rules) }}"
+
 # This Playbook configure firewall 'ferm'
 - name: Ferm | Install iptables
   package:
@@ -27,7 +30,7 @@
 
 - name: Ferm | Include ferm.d directory on RedHat
   lineinfile: dest=/etc/ferm.conf line="@include 'ferm.d/';" backup=yes insertbefore=BOF create=yes
-  when: ansible_os_family|lower != "redhat"
+  when: ansible_os_family|lower == "redhat"
 
 - name: Ferm | Create the ferm conf files
   template: src=ferm.conf.j2 dest="{{ ferm_dir }}/{{item.key}}.conf" mode=0655 owner=root group=root backup=yes
