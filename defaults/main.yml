@@ -1,4 +1,4 @@
-ferm_rules:
+ferm_default_rules:
   default:
     - chain: INPUT
       domains: [ip, ip6]
